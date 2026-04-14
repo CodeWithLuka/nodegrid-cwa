@@ -22,14 +22,27 @@ export default function Home() {
     }),
   );
 
+  const testAi = useMutation(
+    trpc.testAi.mutationOptions({
+      onSuccess: () => {
+        toast.success("AI Job Started");
+      },
+    }),
+  );
+
   const isPending = create.isPending;
 
+  const testAiPending = testAi.isPending;
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black gap-6">
       <h1 className="text-2xl"> Think, Different</h1>
       <h1 className="text-xl"> Think, {JSON.stringify(data, null, 2)}</h1>
       <Button onClick={() => create.mutate()} disabled={isPending}>
         Create
+      </Button>
+      <Button onClick={() => testAi.mutate()} disabled={testAiPending}>
+        Test AI
       </Button>
     </div>
   );

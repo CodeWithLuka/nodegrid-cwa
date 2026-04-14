@@ -1,21 +1,51 @@
 import prisma from "@/db";
 import { inngest } from "./client";
+import { createOpenAI } from "@ai-sdk/openai";
+import { createAnthropic } from "@ai-sdk/anthropic";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import { generateText } from "ai";
+
+const google = createGoogleGenerativeAI();
+const openAi = createOpenAI();
+const anthropic = createAnthropic();
 
 export const processTask = inngest.createFunction(
-  { id: "process-task", triggers: { event: "app/workflow.created" } },
+  { id: "execute-ai", triggers: { event: "app/execute.ai" } },
   async ({ event, step }) => {
-    const result = await step.run("create-workflow", async () => {
-      prisma.workflow.create({
-        data: {
-          name: "Ramparts Inngest Workflow",
-        },
-      });
-    });
+    const { steps: geminiSteps } = await step.ai.wrap(
+      "gemini-generate-text",
+      generateText,
+      {
+        model: google("gemini-2.5-flash"),
+        system: "You are a helpful assistant",
+        prompt: "What is aerodynamics?.",
+      },
+    );
 
-    await step.sleep("fetch", "10s");
-    await step.sleep("transcribe", "10s");
-    await step.sleep("send", "10s");
+    const { steps: openAiSteps } = await step.ai.wrap(
+      "open-ai-generate-text",
+      generateText,
+      {
+        model: openAi("gpt-4o"),
+        system: "You are a helpful assistant",
+        prompt: "What is aerodynamics?.",
+      },
+    );
 
-    return { message: `Work Created`, result };
+    const { steps: anthropicSteps } = await step.ai.wrap(
+      "anthropic-generate-text",
+      generateText,
+      {
+        model: anthropic("claude-opus-4-0"),
+        system: "You are a helpful assistant",
+        prompt: "What is aerodynamics?.",
+      },
+    );
+
+    return {
+      geminiSteps,
+      openAiSteps,
+      anthropicSteps,
+    };
   },
 );
