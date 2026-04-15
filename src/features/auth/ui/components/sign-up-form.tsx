@@ -60,7 +60,7 @@ export const SignUpForm = () => {
         name: values.name,
         email: values.email,
         password: values.password,
-        callbackURL: "/",
+        callbackURL: "/workflows",
       },
       {
         onRequest: () => {
@@ -69,7 +69,7 @@ export const SignUpForm = () => {
         onSuccess: () => {
           toast.dismiss();
           toast.success("Account created successfully");
-          router.push("/");
+          router.push("/workflows");
           router.refresh();
         },
         onError: ({ error }) => {

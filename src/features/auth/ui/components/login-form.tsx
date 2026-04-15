@@ -50,7 +50,7 @@ export const LoginForm = () => {
       {
         email: values.email,
         password: values.password,
-        callbackURL: "/",
+        callbackURL: "/workflows",
       },
       {
         onRequest: () => {
@@ -59,7 +59,7 @@ export const LoginForm = () => {
         onSuccess: () => {
           toast.dismiss();
           toast.success("Signed in successfully");
-          router.push("/");
+          router.push("/workflows");
           router.refresh();
         },
         onError: ({ error }) => {

@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 
 import { authClient } from "@/lib/auth-client";
+import { useHasActiveSubscription } from "@/features/subscriptions/hooks/use-has-active-subscription";
 import {
   Sidebar,
   SidebarContent,
@@ -52,6 +53,7 @@ const menuItems = [
 export const DashboardSidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const { hasActiveSubscription, isLoading } = useHasActiveSubscription();
 
   const onLogout = () => {
     authClient.signOut({
@@ -67,6 +69,14 @@ export const DashboardSidebar = () => {
         },
       },
     });
+  };
+
+  const onUpgradeToPro = () => {
+    authClient.checkout({ slug: "nodegrid-pro" });
+  };
+
+  const onCustomerPortal = () => {
+    authClient.customer.portal();
   };
 
   return (
@@ -123,21 +133,23 @@ export const DashboardSidebar = () => {
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton
-              tooltip="Upgrade to Pro"
-              className="gap-x-4 h-10 px-4"
-              onClick={() => {}}
-            >
-              <StarIcon />
-              <span>Upgrade to Pro</span>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          {!hasActiveSubscription && !isLoading && (
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                tooltip="Upgrade to Pro"
+                className="gap-x-4 h-10 px-4"
+                onClick={onUpgradeToPro}
+              >
+                <StarIcon />
+                <span>Upgrade to Pro</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
           <SidebarMenuItem>
             <SidebarMenuButton
               tooltip="Billing Portal"
               className="gap-x-4 h-10 px-4"
-              onClick={() => {}}
+              onClick={onCustomerPortal}
             >
               <CreditCardIcon />
               <span>Billing Portal</span>
