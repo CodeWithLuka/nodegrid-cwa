@@ -25,7 +25,7 @@ export const useCreateWorkflow = () => {
         toast.dismiss();
         toast.success(`Workflow ${workflowName} created.`);
 
-        queryClient.invalidateQueries(trpc.workflows.getMany.queryOptions());
+        queryClient.invalidateQueries(trpc.workflows.getMany.queryOptions({}));
       },
       onError: (error) => {
         toast.dismiss();
