@@ -17,17 +17,20 @@ interface WorkflowIdPageProps {
 
 const WorkflowIdPage = async ({ params }: WorkflowIdPageProps) => {
   const { workflowId } = await params;
+
   await requireAuth();
-  prefetchWorkflow(workflowId);
+  await prefetchWorkflow(workflowId);
 
   return (
     <HydrateClient>
       <ErrorBoundary fallback={<WorkflowEditorErrorState />}>
         <Suspense fallback={<WorkflowEditorLoadingState />}>
-          <WorkflowEditorHeader workflowId={workflowId} />
-          <main className="flex-1">
-            <WorkflowEditorView workflowId={workflowId} />
-          </main>
+          <div className="flex h-screen flex-col overflow-hidden">
+            <WorkflowEditorHeader workflowId={workflowId} />
+            <main className="min-h-0 flex-1">
+              <WorkflowEditorView workflowId={workflowId} />
+            </main>
+          </div>
         </Suspense>
       </ErrorBoundary>
     </HydrateClient>
