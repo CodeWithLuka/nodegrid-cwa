@@ -1,6 +1,7 @@
 "use client";
 
 import { Toaster } from "@/components/ui/sonner";
+import { TRPCReactProvider } from "@/trpc/client";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 import { ThemeProvider } from "./theme/theme-provider";
@@ -20,10 +21,12 @@ export const ClientProviders = ({
       disableTransitionOnChange
       storageKey="nodegrid-cwa"
     >
-      <TooltipProvider>
-        {children}
-        <Toaster richColors position="top-right" />
-      </TooltipProvider>
+      <TRPCReactProvider>
+        <TooltipProvider>
+          {children}
+          <Toaster richColors position="top-right" />
+        </TooltipProvider>
+      </TRPCReactProvider>
     </ThemeProvider>
   );
 };
